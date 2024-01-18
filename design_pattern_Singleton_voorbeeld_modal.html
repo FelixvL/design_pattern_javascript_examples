@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Singleton Modal Example</title>
+</head>
+
+<body>
+    <button id="openModal">Open Modal</button>
+
+    <div id="modal"
+        style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); border:1px solid black; padding:20px; background-color:white;">
+        <span id="modalContent">Dit is een modal venster!</span>
+        <button id="closeModal">Sluit</button>
+    </div>
+
+    <script>
+        var ModalSingleton = (function () {
+            var instance;
+
+            function createInstance() {
+                var modal = document.getElementById("modal");
+                var closeModal = document.getElementById("closeModal");
+                closeModal.onclick = function () {
+                    modal.style.display = "none";
+                }
+                return modal;
+            }
+
+            return {
+                getInstance: function () {
+                    if (!instance) {
+                        instance = createInstance();
+                    }
+                    return instance;
+                }
+            };
+        })();
+
+        document.getElementById("openModal").onclick = function () {
+            var modal = ModalSingleton.getInstance();
+            modal.style.display = "block";
+        };
+
+
+    </script>
+</body>
+
+</html>

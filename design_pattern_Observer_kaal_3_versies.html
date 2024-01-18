@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Singleton Modal Example</title>
+</head>
+
+<body>
+
+
+    <script>
+        function Subject() {
+            this.observers = [];
+        }
+
+        Subject.prototype = {
+            subscribe: function (fn) {
+                this.observers.push(fn);
+            },
+            unsubscribe: function (fnToRemove) {
+                this.observers = this.observers.filter(fn => {
+                    if (fn !== fnToRemove) return fn;
+                });
+            },
+            fire: function (data) {
+                this.observers.forEach(fn => {
+                    fn(data);
+                });
+            }
+        };
+
+        function Observer1(data) {
+            console.log(`Observer 1: ${data}`);
+        }
+
+        function Observer2(data) {
+            console.log(`Observer 2: ${data}`);
+        }
+
+        var subject = new Subject();
+
+        subject.subscribe(Observer1);
+        subject.subscribe(Observer2);
+
+        subject.fire('Hello!');
+
+        subject.unsubscribe(Observer1);
+
+        subject.fire('Another event');
+        //=======================================================================
+        function SubjectIEC() {
+            this.observersIEC = [];
+        }
+
+        SubjectIEC.prototype = {
+            subscribeIEC: function (fn) {
+                this.observersIEC.push(fn);
+            },
+            unsubscribeIEC: function (fnToRemove) {
+                var newObservers = [];
+                for (var i = 0; i < this.observersIEC.length; i++) {
+                    if (this.observersIEC[i] !== fnToRemove) {
+                        newObservers.push(this.observersIEC[i]);
+                    }
+                }
+                this.observersIEC = newObservers;
+            },
+            fireIEC: function (data) {
+                for (var i = 0; i < this.observersIEC.length; i++) {
+                    this.observersIEC[i](data);
+                }
+            }
+        };
+
+        function Observer1IEC(data) {
+            console.log('Observer 1 IEC: ' + data);
+        }
+
+        function Observer2IEC(data) {
+            console.log('Observer 2 IEC: ' + data);
+        }
+
+        var subjectIEC = new SubjectIEC();
+
+        subjectIEC.subscribeIEC(Observer1IEC);
+        subjectIEC.subscribeIEC(Observer2IEC);
+
+        subjectIEC.fireIEC('Hello IEC!');
+
+        subjectIEC.unsubscribeIEC(Observer1IEC);
+
+        subjectIEC.fireIEC('Another event IEC');
+
+        //===============================================================
+
+        class SubjectOOP {
+            constructor() {
+                this.observersOOP = [];
+            }
+
+            subscribeOOP(observer) {
+                this.observersOOP.push(observer);
+            }
+
+            unsubscribeOOP(observer) {
+                this.observersOOP = this.observersOOP.filter(sub => sub !== observer);
+            }
+
+            fireOOP(change) {
+                this.observersOOP.forEach(observer => {
+                    observer.updateOOP(change);
+                });
+            }
+        }
+
+        class ObserverOOP {
+            constructor(state) {
+                this.state = state;
+                this.initialState = state;
+            }
+
+            updateOOP(change) {
+                let state = this.state;
+                switch (change) {
+                    default:
+                        this.state = change;
+                        break;
+                }
+                console.log(`State veranderd van ${state} naar ${this.state}`);
+            }
+        }
+
+        const subjectOOP = new SubjectOOP();
+
+        const observer1OOP = new ObserverOOP(1);
+        subjectOOP.subscribeOOP(observer1OOP);
+
+        const observer2OOP = new ObserverOOP(2);
+        subjectOOP.subscribeOOP(observer2OOP);
+
+        subjectOOP.fireOOP('event1');
+        subjectOOP.unsubscribeOOP(observer1OOP);
+        subjectOOP.fireOOP('event2');
+
+
+    </script>
+</body>
+
+</html>

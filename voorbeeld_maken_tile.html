@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Profile Card</title>
+  <style>
+    #profileContainer {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      padding: 10px;
+    }
+
+    .profile-card {
+      background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
+      border-radius: 20px;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      margin: 10px 0;
+      min-width: 250px;
+      background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
+      border-radius: 20px;
+      color: white;
+      padding: 20px;
+      width: 300px;
+      margin: 0 auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-card img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .profile-card .details {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .profile-card .details div {
+      margin-bottom: 10px;
+    }
+
+    .heart {
+      color: red;
+    }
+  </style>
+  <script>
+    function getPersonInfoIEC() {
+      console.log("in IEC variant");
+      return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://randomuser.me/api/');
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            resolve(JSON.parse(xhr.responseText));
+          } else {
+            reject(new Error('Request failed with status: ' + xhr.status));
+          }
+        };
+        xhr.onerror = function () {
+          reject(new Error('Network error'));
+        };
+        xhr.send();
+      });
+    }
+
+    function toonPersoonHTMLIEC() {
+      getPersonInfoIEC()
+        .then(function (persoonInfo) {
+          createUserCard(persoonInfo.results[0]);
+        })
+        .catch(function (error) {
+          console.error('Er is een fout opgetreden:', error);
+        });
+    }
+
+    function fetchRandomUser() {
+      fetch('https://randomuser.me/api/')
+        .then(response => response.json())
+        .then(data => createUserCard(data.results[0]));
+    }
+
+    function createUserCard(user) {
+      const container = document.getElementById('profileContainer') || document.createElement('div');
+      container.id = 'profileContainer';
+
+      const profileCard = document.createElement('div');
+      profileCard.className = 'profile-card';
+
+      const img = document.createElement('img');
+      img.src = user.picture.large;
+      img.alt = "Profile Picture";
+      img.style.borderRadius = "50%";
+      img.style.width = "100px";
+      img.style.height = "100px";
+      img.style.objectFit = "cover";
+
+      const detailsDiv = document.createElement('div');
+      detailsDiv.className = "details";
+      detailsDiv.style.textAlign = "center";
+      detailsDiv.style.marginTop = "20px";
+
+      const nameHeader = document.createElement('h2');
+      nameHeader.textContent = `${user.name.first} ${user.name.last}`;
+      detailsDiv.appendChild(nameHeader);
+
+      const ageDiv = document.createElement('div');
+      ageDiv.textContent = `Age: ${user.dob.age}`;
+      detailsDiv.appendChild(ageDiv);
+
+      const locationDiv = document.createElement('div');
+      locationDiv.textContent = `Location: ${user.location.city}, ${user.location.country}`;
+      detailsDiv.appendChild(locationDiv);
+
+      const emailDiv = document.createElement('div');
+      emailDiv.textContent = `Email: ${user.email}`;
+      detailsDiv.appendChild(emailDiv);
+
+      const phoneDiv = document.createElement('div');
+      phoneDiv.textContent = `Phone: ${user.phone}`;
+      detailsDiv.appendChild(phoneDiv);
+
+      const cellDiv = document.createElement('div');
+      cellDiv.textContent = `Cell: ${user.cell}`;
+      detailsDiv.appendChild(cellDiv);
+
+      const heartDiv = document.createElement('div');
+      heartDiv.innerHTML = 'Made with <span class="heart">❤</span> by RandomUser.me';
+      detailsDiv.appendChild(heartDiv);
+
+      profileCard.appendChild(img);
+      profileCard.appendChild(detailsDiv);
+
+      container.appendChild(profileCard);
+
+      if (!document.contains(container)) {
+        document.body.appendChild(container);
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <button onclick="toonPersoonHTMLIEC();">Voeg persoon toe</button>
+  <hr>
+  <div id="overzicht"></div>
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Drag and Drop Example</title>
+</head>
+
+<body>
+    <script>
+        var TodoModule = (function () {
+            var todos = [];
+
+            function addTodo(item) {
+                todos.push(item);
+                console.log('Todo Added:', item);
+            }
+
+            function removeTodo(index) {
+                todos.splice(index, index + 1);
+                console.log('Todo Removed:', index);
+            }
+
+            function listTodos() {
+                console.log('Todo List:', todos);
+            }
+
+            return {
+                add: function (item) {
+                    addTodo(item);
+                },
+                remove: function (index) {
+                    removeTodo(index);
+                },
+                list: function () {
+                    listTodos();
+                }
+            };
+        })();
+
+        TodoModule.add('Learn JavaScript');
+        TodoModule.add('Practice Module Pattern');
+        TodoModule.list();
+        TodoModule.remove(0);
+        TodoModule.list();
+        // Revealing Module
+        var myModule = (function () {
+            var privateVar = 'Ik ben privé';
+
+            function privateMethod() {
+                console.log('Toegang tot privé methode');
+            }
+
+            function publicMethod() {
+                console.log('Toegang tot openbare methode');
+            }
+
+            return {
+                exposeMethod: publicMethod
+            };
+        })();
+
+        myModule.exposeMethod();
+        // myModule.privateMethod(); // Fout: myModule.privateMethod is geen functie
+
+
+    </script>
+</body>
+
+</html>

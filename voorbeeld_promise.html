@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .div-stijl {
+            background-color: #d35400;
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+            border-radius: 8px;
+            font-family: 'Arial', sans-serif;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function getCatFact() {
+            return new Promise((resolve, reject) => {
+                
+                fetch('https://catfact.ninja/fact')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        resolve(data);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        }
+        
+        function toonKattenFeitenInConsole() {
+            getCatFact()
+                .then(catFact => {
+                    console.log('Cat Fact:', catFact.fact);
+                })
+                .catch(error => {
+                    console.error('Er is een fout opgetreden:', error);
+                });
+        }
+        function toonKattenFeitenInHTML() {
+            getCatFact()
+                .then(catFact => {
+                    console.log('TO DO HTML Cat Fact:', catFact.fact);
+                })
+                .catch(error => {
+                    console.error('Er is een fout opgetreden:', error);
+                });
+        }
+        
+        function getCatFactIEC() {
+            console.log("in IEC variant");
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://catfact.ninja/fact');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject(new Error('Request failed with status: ' + xhr.status));
+                    }
+                };
+                xhr.onerror = function () {
+                    reject(new Error('Network error'));
+                };
+                xhr.send();
+            });
+        }
+
+        
+        function toonKattenFeitenInConsoleIEC() {
+            getCatFactIEC()
+                .then(function (catFact) {
+                    console.log('IEC Cat Fact:', catFact.fact);
+                })
+                .catch(function (error) {
+                    console.error('Er is een fout opgetreden:', error);
+                });
+            }
+        function toonKattenFeitenInHTMLIEC() {
+            getCatFactIEC()
+                .then(function (catFact) {
+                    addFactToDOM(catFact);
+                })
+                .catch(function (error) {
+                    console.error('Er is een fout opgetreden:', error);
+                });
+        }
+        function addFactToDOM(catFact) {
+            
+            var div = document.createElement('div');
+            div.className = 'div-stijl'; 
+            div.textContent = catFact.fact;
+
+            document.body.appendChild(div);
+        }
+
+    </script>
+</head>
+
+<body>
+    <button onclick="toonKattenFeitenInConsole()">Toon kattenfeiten in console NEW</button>
+    <button onclick="toonKattenFeitenInHTML()">toonKattenFeitenInHTML NEW</button>
+    <button onclick="toonKattenFeitenInConsoleIEC()">Toon kattenfeiten in console IEC</button>
+    <button onclick="toonKattenFeitenInHTMLIEC()">Toon kattenfeiten in console IEC</button>
+</body>
+
+</html>

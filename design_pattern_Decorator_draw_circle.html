@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Decorator Pattern Grafische Demo</title>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="400" height="400"></canvas>
+    <button id="drawCircle">Teken Cirkel</button>
+    <button id="colorRed">Kleur Rood</button>
+    <button id="addBorder">Voeg Rand Toe</button>
+
+    <script>
+        class Circle {
+            draw(ctx) {
+                ctx.beginPath();
+                ctx.arc(200, 200, 50, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        class ColoredDecorator {
+            constructor(circle, color) {
+                this.circle = circle;
+                this.color = color;
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                this.circle.draw(ctx);
+            }
+        }
+
+        class BorderDecorator {
+            constructor(circle) {
+                this.circle = circle;
+            }
+
+            draw(ctx) {
+                this.circle.draw(ctx);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = 'black';
+                ctx.stroke();
+            }
+        }
+
+        // Globale referentie naar de huidige cirkel
+        let currentCircle = new Circle();
+
+        // Tekenfunctie
+        function draw() {
+            const canvas = document.getElementById("myCanvas");
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            currentCircle.draw(ctx);
+        }
+
+        // Event listeners
+        document.getElementById("drawCircle").addEventListener("click", () => {
+            currentCircle = new Circle();
+            draw();
+        });
+
+        document.getElementById("colorRed").addEventListener("click", () => {
+            currentCircle = new ColoredDecorator(currentCircle, 'red');
+            draw();
+        });
+
+        document.getElementById("addBorder").addEventListener("click", () => {
+            currentCircle = new BorderDecorator(currentCircle);
+            draw();
+        });
+
+    </script>
+</body>
+
+</html>

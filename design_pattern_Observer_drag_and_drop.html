@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Drag and Drop Example</title>
+    <style>
+        .draggable {
+            padding: 10px;
+            margin: 10px;
+            background-color: lightblue;
+            cursor: pointer;
+        }
+
+        #dropzone {
+            width: 300px;
+            height: 150px;
+            border: 2px dashed grey;
+            text-align: center;
+            padding: 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="drag-items">
+        <div class="draggable" id="A" draggable="true">Item 1</div>
+        <div class="draggable" id="B" draggable="true">Item 2</div>
+        <div class="draggable" id="C" draggable="true">Item 3</div>
+    </div>
+    <div id="dropzone">Sleep items hier</div>
+    <div id="teller">0</div>
+    <div id="toelichting"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            class DragDropSubject {
+                constructor() {
+                    this.observers = [];
+                }
+
+                subscribe(fn) {
+                    this.observers.push(fn);
+                }
+
+                unsubscribe(fn) {
+                    this.observers = this.observers.filter(subscriber => subscriber !== fn);
+                }
+
+                notify(draggedItem, dropzone) {
+                    this.observers.forEach(observer => observer(draggedItem, dropzone));
+                }
+            }
+
+            const dragDropSubject = new DragDropSubject();
+            const draggables = document.querySelectorAll('.draggable');
+            const dropzone = document.getElementById('dropzone');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', function (e) {
+                    e.dataTransfer.setData('text', this.id);
+                });
+            });
+
+            dropzone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            dropzone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                const draggedItemId = e.dataTransfer.getData('text');
+                const draggedItem = document.getElementById(draggedItemId) || document.querySelector(`[draggable="true"]`);
+                dragDropSubject.notify(draggedItem, dropzone);
+            });
+
+            function onDropAction(draggedItem, dropzone) {
+                dropzone.appendChild(draggedItem);
+            }
+
+            function telSleepActies(draggedItem) {
+                var getal = document.getElementById("teller").innerHTML;
+                getal = parseInt(getal);
+                document.getElementById("teller").innerHTML = getal + 1;
+                document.getElementById("toelichting").innerHTML += draggedItem.innerHTML + "<br>";
+            }
+
+            dragDropSubject.subscribe(onDropAction);
+            dragDropSubject.subscribe(telSleepActies);
+        });
+
+    </script>
+</body>
+
+</html>

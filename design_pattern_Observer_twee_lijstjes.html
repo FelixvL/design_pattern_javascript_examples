@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Observer Pattern - To-Do App</title>
+</head>
+
+<body>
+    <input type="text" id="newTask">
+    <button id="addTask">Add Task</button>
+    <ul id="taskList"></ul>
+    <hr>
+    <ul id="taskList2"></ul>
+
+    <script>
+        class TaskList {
+            constructor() {
+                this.tasks = [];
+                this.observers = [];
+            }
+
+            addObserver(observer) {
+                this.observers.push(observer);
+            }
+
+            notifyObservers() {
+                this.observers.forEach(observer => observer(this.tasks));
+            }
+
+            addTask(task) {
+                this.tasks.push(task);
+                this.notifyObservers();
+            }
+        }
+
+        function updateTaskListDisplay(tasks) {
+            const listElement = document.getElementById('taskList');
+            listElement.innerHTML = '';
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.textContent = task;
+                listElement.appendChild(li);
+            });
+        }
+
+        function updateTaskListDisplay2(tasks) {
+            const listElement = document.getElementById('taskList2');
+            listElement.innerHTML = '';
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.textContent = task;
+                listElement.appendChild(li);
+            });
+        }
+
+        const taskList = new TaskList();
+        taskList.addObserver(updateTaskListDisplay);
+        taskList.addObserver(updateTaskListDisplay2);
+
+        document.getElementById('addTask').addEventListener('click', () => {
+            const newTask = document.getElementById('newTask').value;
+            taskList.addTask(newTask);
+            document.getElementById('newTask').value = '';
+        });
+
+    </script>
+</body>
+
+</html>
